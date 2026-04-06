@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQE 2 Study Tracker</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <header>
+            <h1>SQE 2 Study Tracker</h1>
+            <p class="subtitle">Solicitors Qualifying Examination Part 2</p>
+        </header>
+
+        <nav class="tabs">
+            <button class="tab active" data-tab="dashboard">Dashboard</button>
+            <button class="tab" data-tab="matrix">Skills Matrix</button>
+            <button class="tab" data-tab="sessions">Study Sessions</button>
+            <button class="tab" data-tab="notes">Notes</button>
+        </nav>
+
+        <!-- Verse of the Day -->
+        <div class="verse-card" id="verseCard">
+            <p class="verse-text" id="verseText"></p>
+            <span class="verse-ref" id="verseRef"></span>
+        </div>
+
+        <!-- Dashboard -->
+        <section id="dashboard" class="tab-content active">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <span class="stat-label">Total Hours</span>
+                    <span class="stat-value" id="totalHours">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Sessions</span>
+                    <span class="stat-value" id="totalSessions">0</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Current Streak</span>
+                    <span class="stat-value" id="currentStreak">0 days</span>
+                </div>
+                <div class="stat-card">
+                    <span class="stat-label">Topics Covered</span>
+                    <span class="stat-value" id="topicsCovered">0/30</span>
+                </div>
+            </div>
+
+            <div class="dashboard-sections">
+                <div class="card">
+                    <h3>Overall Progress</h3>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar" id="overallProgress" style="width: 0%"></div>
+                    </div>
+                    <span class="progress-text" id="overallProgressText">0%</span>
+                </div>
+
+                <div class="card">
+                    <h3>Progress by Skill</h3>
+                    <div id="skillProgressBars"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Progress by Practice Area</h3>
+                    <div id="areaProgressBars"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Weekly Goal</h3>
+                    <div class="weekly-goal-setup">
+                        <label for="weeklyGoalInput">Weekly study goal (minutes):</label>
+                        <div class="goal-input-row">
+                            <input type="number" id="weeklyGoalInput" min="1" max="10080" placeholder="e.g. 600">
+                            <button class="btn btn-primary btn-sm" id="setGoalBtn">Set Goal</button>
+                        </div>
+                    </div>
+                    <div id="weeklyGoalDisplay" style="display:none">
+                        <div class="progress-item-header" style="margin-top:12px">
+                            <span class="progress-item-label" id="weeklyGoalLabel">0 / 0 min this week</span>
+                            <span class="progress-item-value" id="weeklyGoalPct">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar" id="weeklyGoalBar" style="width: 0%"></div>
+                        </div>
+                        <span class="progress-text" id="weeklyGoalRemaining"></span>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <h3>Time by Skill</h3>
+                    <div id="timeBySkill"></div>
+                </div>
+
+                <div class="card">
+                    <h3>Recent Activity</h3>
+                    <div id="recentActivity" class="recent-list">
+                        <p class="empty-state">No study sessions yet. Start tracking!</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Skills Matrix -->
+        <section id="matrix" class="tab-content">
+            <div class="card">
+                <h3>Skills x Practice Areas Matrix</h3>
+                <p class="hint">Click a cell to update your confidence level</p>
+                <div class="matrix-wrapper">
+                    <table class="matrix-table" id="matrixTable"></table>
+                </div>
+                <div class="matrix-legend">
+                    <span class="legend-item"><span class="legend-dot" style="background: var(--brown-light)"></span> Not Started</span>
+                    <span class="legend-item"><span class="legend-dot" style="background: #f1c40f"></span> In Progress</span>
+                    <span class="legend-item"><span class="legend-dot" style="background: #2ecc71"></span> Confident</span>
+                    <span class="legend-item"><span class="legend-dot" style="background: #9b59b6"></span> Mastered</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Study Sessions -->
+        <section id="sessions" class="tab-content">
+            <div class="card">
+                <h3>Log Study Session</h3>
+                <form id="sessionForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sessionDate">Date</label>
+                            <input type="date" id="sessionDate" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sessionDuration">Duration (minutes)</label>
+                            <input type="number" id="sessionDuration" min="1" max="720" required placeholder="e.g. 90">
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="sessionSkill">Skill</label>
+                            <select id="sessionSkill" required>
+                                <option value="">Select skill...</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="sessionArea">Practice Area</label>
+                            <select id="sessionArea" required>
+                                <option value="">Select area...</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionType">Activity Type</label>
+                        <select id="sessionType" required>
+                            <option value="">Select type...</option>
+                            <option value="reading">Reading / Theory</option>
+                            <option value="practice">Practice Questions</option>
+                            <option value="mock">Mock Exam / Timed Practice</option>
+                            <option value="revision">Revision</option>
+                            <option value="roleplay">Role-play Practice</option>
+                            <option value="research">Legal Research Practice</option>
+                            <option value="drafting">Drafting Practice</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="sessionNotes">Session Notes (optional)</label>
+                        <textarea id="sessionNotes" rows="3" placeholder="What did you cover? Any key takeaways?"></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Log Session</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Session History</h3>
+                <div class="filter-row">
+                    <input type="text" id="searchSessions" placeholder="Search sessions...">
+                    <select id="filterSkill">
+                        <option value="">All Skills</option>
+                    </select>
+                    <select id="filterArea">
+                        <option value="">All Areas</option>
+                    </select>
+                </div>
+                <div id="sessionList" class="session-list">
+                    <p class="empty-state">No sessions logged yet.</p>
+                </div>
+                <div id="clearAllWrapper" style="margin-top:12px;text-align:right;display:none">
+                    <button class="btn btn-danger" id="clearAllBtn">Clear All Sessions</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Notes -->
+        <section id="notes" class="tab-content">
+            <div class="card">
+                <h3>Study Notes</h3>
+                <form id="noteForm">
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="noteSkill">Skill</label>
+                            <select id="noteSkill">
+                                <option value="">General</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="noteArea">Practice Area</label>
+                            <select id="noteArea">
+                                <option value="">General</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="noteTitle">Title</label>
+                        <input type="text" id="noteTitle" required placeholder="e.g. Key points on bail applications">
+                    </div>
+                    <div class="form-group">
+                        <label for="noteContent">Content</label>
+                        <textarea id="noteContent" rows="6" required placeholder="Write your notes here..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Note</button>
+                </form>
+            </div>
+
+            <div class="card">
+                <h3>Saved Notes</h3>
+                <div class="filter-row">
+                    <select id="filterNoteSkill">
+                        <option value="">All Skills</option>
+                    </select>
+                    <select id="filterNoteArea">
+                        <option value="">All Areas</option>
+                    </select>
+                    <input type="text" id="searchNotes" placeholder="Search notes...">
+                </div>
+                <div id="notesList" class="notes-list">
+                    <p class="empty-state">No notes saved yet.</p>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Love Note -->
+    <div class="love-note">
+        From Olami to Ibukun
+        <span class="floating-heart"></span>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
